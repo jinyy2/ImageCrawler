@@ -5,6 +5,7 @@ import datetime
 
 from tkinter import *
 from tkinter import messagebox
+from tkinter import filedialog
 import tkinter.font as tkFont
 from bs4 import BeautifulSoup
 
@@ -20,6 +21,9 @@ label.pack(pady=30)
 #URL 입력창
 ent = Entry(app,width=30)
 ent.pack()
+
+
+
 #크롤링 & 이미지 다운
 def crawling(url):
     try:
@@ -61,6 +65,8 @@ def clear_button():
 
 startBtn = Button(app, text = "Start", width=10, command=start_button)
 startBtn.pack(side='left',padx=30,pady=10)
+
+
 
 clearBtn = Button(app, text = "Clear", width=10, command=clear_button)
 clearBtn.pack(side='right',padx=30,pady=10)
