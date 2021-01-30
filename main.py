@@ -22,7 +22,17 @@ label.pack(pady=30)
 ent = Entry(app,width=30)
 ent.pack()
 
+def select_folder():
+    global saveDir
+    saveDir = filedialog.askdirectory() + "/"+ now + "/"
+    print("1"+saveDir)
+    pass
 
+now = datetime.datetime.now().strftime('%y%m%d_%H%M')
+saveDir = "C:/Images/" + now + "/"
+
+startBtn = Button(app, text = "Folder", width=10, command=select_folder)
+startBtn.pack(padx=10,pady=10)
 
 #크롤링 & 이미지 다운
 def crawling(url):
@@ -30,8 +40,8 @@ def crawling(url):
         req = requests.get(url)
         soup = BeautifulSoup(req.content, "html.parser")
         imgList = soup.findAll('img')
-        now = datetime.datetime.now().strftime('%y%m%d_%H%M')
-        saveDir = "C:/Images/" + now + "/"
+        print("2"+saveDir)
+
         try:
             if not os.path.exists(saveDir):
                 os.makedirs(saveDir)
