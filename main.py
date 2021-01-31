@@ -10,26 +10,39 @@ from tkinter import filedialog
 import tkinter.font as tkFont
 
 
-#
+#메뉴얼
 def manual():
+    global now
+    now = datetime.datetime.now().strftime('%y%m%d_%H%M')
     messagebox.showinfo("manual", "1. URL을 입력해주세요.\n"
                                   "2. 원하는 위치에 다운받기를 원하면 Folder를 눌러 경로를 설정해주세요.\n"
                                   " # 경로 미설정시 실행 파일 위치 기준으로 생성됩니다 #\n"
                                   "3. Start 버튼을 누르면 해당 폴더 위치에 "+now+" 폴더가 생성된 후 다운로드됩니다.\n")
+# 디렉토리 설정
 def select_folder():
     global saveDir
-    saveDir = filedialog.askdirectory() + "/" + now + "/"
+    saveDir = filedialog.askdirectory() + "/"
+    entDirectory.delete(0,"end")
+    entDirectory.insert(0,saveDir)
     print("1"+saveDir)
-    pass
 
 #크롤링 & 이미지 다운
 def crawling(url):
     try:
+        global saveDir
+        global now
+        now = datetime.datetime.now().strftime('%y%m%d_%H%M')
+
+        #경로 빈값일 때 현재위치 설정
+        if saveDir == "":
+            print('hi' +os.getcwd())
+            saveDir = os.getcwd() + "/"
+
         req = requests.get(url)
         soup = BeautifulSoup(req.content, "html.parser")
         imgList = soup.findAll('img')
+        saveDir += now + "/"
         print("2"+saveDir)
-
         try:
             if not os.path.exists(saveDir):
                 os.makedirs(saveDir)
@@ -64,26 +77,36 @@ if __name__ == '__main__':
     app = Tk()
     app.title("GUI Crawler v1.0")  # 창 타이틀
     app.geometry("300x200+800+400")  # 창 크기
-    font = tkFont.Font(family="Consolas", size=16, weight="bold")
+    font = tkFont.Font(family="Consolas", size=14, weight="bold")
 
+    now = datetime.datetime.now().strftime('%y%m%d_%H%M')
+
+    saveDir = os.getcwd()
+    #메뉴바
     menubar = Menu(app)
     menu1 = Menu(menubar,tearoff=0)
     menu1.add_command(label="Manual",command=manual)
     menu1.add_command(label="test2")
     menu1.add_command(label="test3")
     menubar.add_cascade(label="File", menu=menu1)
+
+    # URL 설정
     label = Label(app, text="URL을 입력하세요.", font=font)
-    label.pack(pady=30)
+    label.pack(pady=20)
 
     # URL 입력창
-    ent = Entry(app, width=30)
+    ent = Entry(app, width=40)
     ent.pack()
 
-    now = datetime.datetime.now().strftime('%y%m%d_%H%M')
-    saveDir = "C:/Images/" + now + "/"
+    # URL 입력창
+    entDirectory = Entry(app, width=40)
+    entDirectory.insert(0,saveDir)
+    entDirectory.pack()
 
-    startBtn = Button(app, text="Folder", width=10, command=select_folder)
-    startBtn.pack(padx=10, pady=10)
+
+    #버튼
+    selectFolderBtn = Button(app, text="폴더 선택", width=10, command=select_folder)
+    selectFolderBtn .pack(padx=10, pady=10)
 
     startBtn = Button(app, text="Start", width=10, command=start_button)
     startBtn.pack(side='left', padx=30, pady=10)
