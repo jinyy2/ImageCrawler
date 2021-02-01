@@ -24,7 +24,7 @@ def select_Directory():
     selectDirectory = filedialog.askdirectory() + "/"
     entDirectory.delete(0,"end")
     entDirectory.insert(0,selectDirectory)
-    print("logger - selectDirectory "+selectDirectory)
+    # print("logger - selectDirectory "+selectDirectory)
 
 # 크롤링 & 이미지 다운
 def crawling(url):
@@ -33,7 +33,7 @@ def crawling(url):
         now = datetime.datetime.now().strftime('%y%m%d_%H%M')
         # 경로 빈값일 때 현재위치 설정
         if saveDirectory == "":
-            print('logger - Directory : ' +os.getcwd())
+            # print('logger - Directory : ' +os.getcwd())
             saveDirectory = os.getcwd() + "/"
         elif saveDirectory[-1] != "/":  # 마지막 문자열 / 체크
             saveDirectory += "/"
@@ -52,7 +52,7 @@ def crawling(url):
         images = driver.find_elements_by_css_selector("img")
 
         result = []
-        print(images)
+        # print(images)
         for img in images:
             if 'gif' in img.get_attribute('src'):
                 continue
@@ -65,7 +65,7 @@ def crawling(url):
 
         saveDirectory += now + "/"
 
-        print("logger - 최종 saveDirectory 위치 확인: "+saveDirectory)
+        # print("logger - 최종 saveDirectory 위치 확인: "+saveDirectory)
         try:
             if not os.path.exists(saveDirectory):
                 os.makedirs(saveDirectory)
@@ -74,44 +74,27 @@ def crawling(url):
 
         i = 1
         for img in result:
-            # print(img)
-            urllib.request.urlretrieve(img, saveDirectory + str(i) + ".jpg")
-            # urlretrieve(img, saveDirectory  + str(i) + '.jpg')
+            if '.PNG' in img:
+                urllib.request.urlretrieve(img, saveDirectory + str(i) + ".png")
+            elif '.JPEG' in img:
+                urllib.request.urlretrieve(img, saveDirectory + str(i) + ".jpeg")
+            elif '.jpg' in img:
+                urllib.request.urlretrieve(img, saveDirectory + str(i) + ".jpg")
+            else:
+                print(img)
             i +=1
 
-        # i = 1
-        # for img in imgList:
-        #     # .gif 파일 스킵
-        #     if '.gif' in img['src']:
-        #         continue
-        #     print(img)
-        #     # print(img['src'])
-        #     if 'data-lay-src' in img:
-        #         print('11')
-        #     img = re.sub("_blur", "0", img['src'])
-        #     # img = urllib.parse.quote_plus(img, safe='://')
-
-            # if '.PNG' in img:
-            #     urllib.request.urlretrieve(urllib.parse.quote_plus(img, safe='://'), saveDirectory + str(i) + ".png")
-            # elif '.JPEG' in img:
-            #     urllib.request.urlretrieve(urllib.parse.quote_plus(img, safe='://'), saveDirectory + str(i) + ".jpeg")
-            # elif '.jpg' in img:
-            #     urllib.request.urlretrieve(urllib.parse.quote_plus(img, safe='://'), saveDirectory + str(i) + ".jpg")
-
-            # urllib.request.urlretrieve(img, saveDirectory + str(i) + ".jpg")
-            # i += 1
         if os.path.exists(saveDirectory):
             messagebox.showinfo("Complete", "다운이 완료되었습니다 :)")
         else:
             messagebox.showinfo("Alert", "이미지 다운을 실패하였습니다 :(")
     except Exception as e:
-        print(e)
-        # messagebox.showinfo("Alert", "이미지 다운을 실패하였습니다 :(\n"+str(e))
+        messagebox.showinfo("Alert", "이미지 다운을 실패하였습니다 :(\n"+str(e))
         pass
 
 def start_button():
     crawlingUrl = Entry.get(ent)
-    print("logger - start_button url " + crawlingUrl)
+    # print("logger - start_button url " + crawlingUrl)
     if crawlingUrl is not "":
         crawling(crawlingUrl)
     else:
@@ -123,19 +106,17 @@ def clear_button():
 if __name__ == '__main__':
     # tkinter Setting
     app = Tk()
-    app.title("GUI Crawler v1.0")  # 창 타이틀
+    app.title("GUI Crawler v1.1")  # 창 타이틀
     app.geometry("300x200+800+400")  # 창 크기
     font = tkFont.Font(family="Consolas", size=14, weight="bold")
 
     currentDirectory = os.getcwd() # 현재위치
-    print("logger - currentDirectory "+currentDirectory)
+    # print("logger - currentDirectory "+currentDirectory)
 
     # 메뉴바
     menubar = Menu(app)
     menu1 = Menu(menubar,tearoff=0)
     menu1.add_command(label="Manual",command=manual)
-    menu1.add_command(label="test2")
-    menu1.add_command(label="test3")
     menubar.add_cascade(label="File", menu=menu1)
 
     # URL 설정
