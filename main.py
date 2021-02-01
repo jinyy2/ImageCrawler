@@ -40,7 +40,7 @@ def crawling(url):
 
         #selenium
         webDriver_options = webdriver.ChromeOptions()
-        webDriver_options.add_argument('headless')
+        webDriver_options.add_argument('--headless')
 
         driver = webdriver.Chrome('./util/chromedriver',options=webDriver_options)
         driver.get(url)
